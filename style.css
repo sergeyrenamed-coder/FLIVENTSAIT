@@ -1,0 +1,61 @@
+
+body {
+  background: black;
+  color: #00ff88;
+  font-family: "Courier New", monospace;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-shadow: 0 0 5px #00ff88, 0 0 10px #00ff88;
+  animation: glitchBg 3s infinite;
+}
+
+
+@keyframes glitchBg {
+  0%, 100% { background-color: #000; }
+  50% { background-color: #010101; }
+}
+
+
+button {
+  background: transparent;
+  border: 1px solid #00ff88;
+  color: #00ff88;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 16px;
+  transition: 0.2s;
+}
+button:hover {
+  background: #00ff88;
+  color: black;
+  box-shadow: 0 0 10px #00ff88;
+}
+
+
+input {
+  background: black;
+  border: 1px solid #00ff88;
+  color: #00ff88;
+  padding: 8px;
+  margin: 5px;
+}
+
+
+#terminal {
+  width: 80%;
+  height: 60%;
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid #00ff88;
+  padding: 20px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.5;
+  box-shadow: 0 0 20px #00ff88;
+}

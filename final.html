@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FrontLineMC — Финал</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    html,body {
+      height:100%;
+      margin:0;
+      background:#000;
+      color:#00ff9d;
+      font-family:'Share Tech Mono', monospace;
+      overflow:hidden;
+      transition: all 0.5s ease;
+    }
+
+    .screen {
+      width:100%;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      background:radial-gradient(circle at center, #001a12 0%, #000 100%);
+    }
+
+    .console {
+      width:80%;
+      max-width:800px;
+      height:60%;
+      background:#020b06;
+      border:2px solid #00ff9d;
+      border-radius:8px;
+      padding:20px;
+      overflow-y:auto;
+      box-shadow:0 0 20px #00ff9d33 inset;
+      position:relative;
+    }
+
+    .line {
+      white-space:pre-wrap;
+      word-wrap:break-word;
+      margin:4px 0;
+    }
+
+    .error {
+      color:#ff4444 !important;
+      text-shadow:0 0 10px #ff0000;
+      animation:glitch 0.3s infinite;
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+
+   
+    .crack {
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+      opacity:0;
+    }
+
+    .crack-line {
+      position:absolute;
+      background:linear-gradient(to bottom, transparent, #ff4444, transparent);
+      width:2px;
+      transform-origin:top center;
+    }
+
+    .crack-line::before {
+      content:'';
+      position:absolute;
+      top:0;
+      left:-1px;
+      width:4px;
+      height:100%;
+      background:linear-gradient(to right, transparent, #ff4444, transparent);
+      animation:lightning 0.5s infinite;
+    }
+
+    @keyframes lightning {
+      0%, 100% { opacity:0.3; }
+      50% { opacity:1; }
+    }
+
+    .crack-branch {
+      position:absolute;
+      background:linear-gradient(to right, transparent, #ff4444, transparent);
+      height:2px;
+    }
+
+    .input-line {
+      display:flex;
+      margin-top:8px;
+    }
+
+    #input {
+      flex:1;
+      background:transparent;
+      border:none;
+      outline:none;
+      color:#00ff9d;
+      font-family:inherit;
+      font-size:16px;
+    }
+
+    #cursor {
+      display:inline-block;
+      width:10px;
+      background:#00ff9d;
+      animation:blink 1s steps(1) infinite;
+    }
+
+    @keyframes blink { 50% { background:transparent; } }
+
+    .btns { margin-top:16px; display:flex; gap:10px; }
+    button {
+      background:#001a12;
+      border:1px solid #00ff9d55;
+      color:#00ff9d;
+      font-family:'Share Tech Mono', monospace;
+      padding:8px 14px;
+      border-radius:6px;
+      cursor:pointer;
+      transition:0.2s;
+    }
+    button:hover { background:#00ff9d22; }
+
+
+    .red-screen {
+      display:none;
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:#330000;
+      z-index:100;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      color:#ff4444;
+      text-align:center;
+    }
+
+    .red-title {
+      font-size:48px;
+      margin-bottom:40px;
+      text-shadow:0 0 20px #ff0000;
+      animation:pulse-red 1s infinite;
+    }
+
+    @keyframes pulse-red {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .forced-buttons {
+      display:flex;
+      gap:30px;
+      margin-top:30px;
+    }
+
+    .forced-btn {
+      background:#660000;
+      border:2px solid #ff4444;
+      color:#ff4444;
+      padding:20px 40px;
+      font-size:24px;
+      cursor:pointer;
+      border-radius:10px;
+      transition:0.3s;
+    }
+
+    .forced-btn:hover {
+      background:#990000;
+      box-shadow:0 0 30px #ff0000;
+    }
+
+   
+    .scrimer {
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:#000;
+      z-index:1000;
+      display:none;
+    }
+
+    .scrimer-content {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    
+    .broken-glass {
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:
+        linear-gradient(45deg, transparent 49%, rgba(255,68,68,0.3) 50%, transparent 51%),
+        linear-gradient(-45deg, transparent 49%, rgba(255,68,68,0.3) 50%, transparent 51%),
+        linear-gradient(90deg, transparent 49%, rgba(255,68,68,0.3) 50%, transparent 51%),
+        linear-gradient(0deg, transparent 49%, rgba(255,68,68,0.3) 50%, transparent 51%);
+      background-size: 20px 20px;
+      opacity:0;
+      pointer-events:none;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="console" id="console">
+      <div class="line">> Инициализация терминала...</div>
+      <div class="line">> Проверка найденных фрагментов кода...</div>
+      <div class="crack" id="crack"></div>
+      <div class="broken-glass" id="brokenGlass"></div>
+    </div>
+
+    <div class="input-line">
+      <span>&gt;</span>
+      <input id="input" placeholder="введите команду..." autocomplete="off" />
+      <span id="cursor"></span>
+    </div>
+
+    <div class="btns">
+      <button id="reset">Сбросить прогресс</button>
+    </div>
+  </div>
+
+ 
+  <div class="red-screen" id="redScreen">
+    <div class="red-title">ТЫ ДОМА ОДИН?</div>
+    <div class="forced-buttons">
+      <button class="forced-btn" onclick="forceAnswer()">ДА</button>
+      <button class="forced-btn" onclick="forceAnswer()">ДА</button>
+    </div>
+  </div>
+
+  
+  <div class="scrimer" id="scrimer">
+    <img class="scrimer-content" src="scrimer.jpg" alt="SCREAMER">
+    <audio id="screamerSound" src="scream.mp3" preload="auto"></audio>
+  </div>
+
+ 
+  <audio id="bgMusic" loop style="display:none">
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const STORAGE_KEY = 'cryptquest_v2_parts';
+    const consoleEl = document.getElementById('console');
+    const input = document.getElementById('input');
+    const redScreen = document.getElementById('redScreen');
+    const scrimer = document.getElementById('scrimer');
+    const crack = document.getElementById('crack');
+    const brokenGlass = document.getElementById('brokenGlass');
+
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+    function print(line, delay = 40, className = '') {
+      return new Promise(async (res) => {
+        const el = document.createElement('div');
+        el.className = 'line ' + className;
+        consoleEl.appendChild(el);
+        let text = '';
+        for (const ch of line) {
+          text += ch;
+          el.textContent = text;
+          await sleep(delay);
+          consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+        res();
+      });
+    }
+
+  
+    function createCracks() {
+      const cracks = [
+       
+        { type: 'line', top: '10%', left: '50%', height: '40%', rotate: '85deg' },
+        { type: 'line', top: '20%', left: '30%', height: '35%', rotate: '-75deg' },
+        { type: 'line', top: '15%', left: '70%', height: '45%', rotate: '95deg' },
+        
+       
+        { type: 'branch', top: '25%', left: '45%', width: '15%', rotate: '45deg' },
+        { type: 'branch', top: '35%', left: '60%', width: '12%', rotate: '-30deg' },
+        { type: 'branch', top: '40%', left: '35%', width: '18%', rotate: '60deg' },
+        { type: 'branch', top: '50%', left: '55%', width: '10%', rotate: '-45deg' }
+      ];
+
+      cracks.forEach((crackConfig, index) => {
+        setTimeout(() => {
+          const element = document.createElement('div');
+          if (crackConfig.type === 'line') {
+            element.className = 'crack-line';
+            element.style.top = crackConfig.top;
+            element.style.left = crackConfig.left;
+            element.style.height = crackConfig.height;
+            element.style.transform = `rotate(${crackConfig.rotate})`;
+          } else {
+            element.className = 'crack-branch';
+            element.style.top = crackConfig.top;
+            element.style.left = crackConfig.left;
+            element.style.width = crackConfig.width;
+            element.style.transform = `rotate(${crackConfig.rotate})`;
+          }
+          crack.appendChild(element);
+        }, index * 150);
+      });
+    }
+
+    
+    async function breakConsole() {
+      
+      crack.style.opacity = '1';
+      
+     
+      createCracks();
+      
+     
+      await sleep(800);
+      brokenGlass.style.opacity = '1';
+      
+      
+      for (let i = 0; i < 8; i++) {
+        consoleEl.style.borderColor = i % 2 === 0 ? '#ff4444' : '#00ff9d';
+        consoleEl.style.boxShadow = i % 2 === 0 ? '0 0 30px #ff0000' : '0 0 20px #00ff9d33';
+        await sleep(80);
+      }
+      
+     
+      consoleEl.style.borderColor = '#ff4444';
+      consoleEl.style.boxShadow = '0 0 40px #ff0000';
+      
+      
+      const crackSound = new Audio('breaking_glass.mp3');
+      crackSound.volume = 0.7;
+      crackSound.play().catch(e => console.log('Sound error'));
+      
+      await sleep(1000);
+      
+      
+      document.querySelector('.screen').style.display = 'none';
+      redScreen.style.display = 'flex';
+    }
+
+    
+    async function triggerScrimer() {
+      redScreen.style.display = 'none';
+      scrimer.style.display = 'block';
+      
+     
+      const audio = document.getElementById('screamerSound');
+      audio.volume = 1.0;
+      audio.play().catch(e => console.log('Audio error'));
+      
+     
+      if (navigator.vibrate) {
+        navigator.vibrate([1000, 500, 1000]);
+      }
+      
+     
+      await sleep(3500);
+      scrimer.style.display = 'none';
+      document.querySelector('.screen').style.display = 'flex';
+      
+    
+      crack.style.opacity = '0';
+      brokenGlass.style.opacity = '0';
+      consoleEl.style.borderColor = '#00ff9d';
+      consoleEl.style.boxShadow = '0 0 20px #00ff9d33';
+      
+    
+      await print('> ОШИБКА УСТРАНЕНА', 50);
+      await sleep(500);
+      await print('> СИСТЕМА ВОССТАНОВЛЕНА', 50);
+      await sleep(300);
+      await print('> ВАШИ КООРДИНАТЫ: -1048 64 2214, 30');
+      await sleep(200);
+      await print('> Поздравляем с прохождением квеста!', 40);
+    }
+
+   
+    function forceAnswer() {
+      triggerScrimer();
+    }
+
+    async function start() {
+      await sleep(800);
+      const st = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      const parts = st.parts || [];
+
+      const missing = parts.filter(p => !p.found);
+      if (missing.length > 0) {
+        await print(`> Недостаточно данных: отсутствуют фрагменты [${missing.map(x=>x.id).join(', ')}]`);
+        await print('> Сбор координат невозможен.');
+        return;
+      }
+
+      await print('> Все фрагменты кода собраны.');
+      await sleep(700);
+      await print('> Инициализация последовательности эксплойта...');
+      await sleep(600);
+      await print('> Извлечение памяти... готово.');
+      await sleep(400);
+      await print('> Анализ геопротоколов...');
+      await sleep(800);
+      await print('> Получение координат...');
+      await sleep(2000);
+
+      const coords = '-1048 64 2214';
+      await print(`> Координаты определены: ${coords}`);
+      await print('> Сохранение результатов...');
+      await sleep(500);
+      await print('> Завершено.');
+      await sleep(1000);
+
+      
+      await print('> Обнаружен бонусный контент...');
+      await sleep(1200);
+      await print('> Активация протокола подарка...');
+      await sleep(1500);
+      await print('> ⚠️  ПРЕДУПРЕЖДЕНИЕ: ОБНАРУЖЕНА АНОМАЛИЯ', 30, 'error');
+      await sleep(800);
+      await print('> СИСТЕМНЫЙ СБОЙ...', 100, 'error');
+      await sleep(500);
+      await print('> НЕВОЗМОЖНО ОСТАНОВИТЬ...', 80, 'error');
+      await sleep(300);
+      await print('> ОШИБКА: #0x7F3A1C', 50, 'error');
+      await sleep(200);
+      
+      
+      breakConsole();
+    }
+
+    start();
+
+    input.addEventListener('keydown', async (e) => {
+      if (e.key === 'Enter') {
+        const val = input.value.trim();
+        input.value = '';
+        if (!val) return;
+        const el = document.createElement('div');
+        el.className = 'line';
+        el.textContent = `> ${val}`;
+        consoleEl.appendChild(el);
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+
+        if (val.toLowerCase() === 'reset') {
+          localStorage.removeItem(STORAGE_KEY);
+          await print('> Прогресс сброшен. Возврат на главную...');
+          await sleep(1000);
+          window.location.href = 'index.html';
+        } else {
+          await print('> Неизвестная команда.');
+        }
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', async () => {
+      if (confirm('Сбросить прогресс?')) {
+        localStorage.removeItem(STORAGE_KEY);
+        window.location.href = 'index.html';
+      }
+    });
+
+ 
+    //(function() {
+      //const isBot = () => navigator.webdriver || window.phantom || window._phantom || 
+        //window.__nightmare || window.callPhantom || window._selenium ||
+        //navigator.userAgent.includes('Headless') || navigator.userAgent.includes('PhantomJS') ||
+        //navigator.userAgent.includes('Puppeteer') || navigator.userAgent.includes('Playwright');
+
+      //let humanDetected = false;
+      //const markHuman = () => humanDetected = true;
+      
+      //['mousemove', 'click', 'keydown', 'scroll', 'touchstart'].forEach(ev => 
+        //document.addEventListener(ev, markHuman)
+      //);
+
+      //setTimeout(() => {
+        //if (!humanDetected && isBot()) {
+          //document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;flex-direction:column;color:#ff3b3b;font-family:monospace;"><h1>AI ACCESS BLOCKED</h1><p>This content is protected from automated systems</p></div>';
+          //throw new Error('AI protection triggered');
+        //}
+      //}, 2000);
+    //})();
+  </script>
+</body>
+</html>

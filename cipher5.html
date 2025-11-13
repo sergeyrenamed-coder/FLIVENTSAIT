@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Cipher 5 — Binary</title>
+<style>body{background:#051018;color:#dfeeff;font-family:monospace;padding:32px}pre{background:#061016;padding:12px;border-radius:6px}</style></head>
+<body>
+<h2>Часть 5 — Binary</h2>
+<p>Декодируйте бинарную строку (ASCII). Затем введите результат в формате <code>N- token</code>.</p>
+<pre id="bin">(скрыто)</pre>
+<div style="margin-top:12px"><input id="v" style="width:100%;padding:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:inherit" placeholder="5- ..."/></div>
+<div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end"><button id="check">Проверить</button><button id="next">Дальше</button></div>
+<div id="msg" style="margin-top:8px;color:#9fb0c8"></div>
+<script>
+const STORAGE_KEY='cryptquest_v2_parts';function load(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))}catch(e){return null}}function save(s){localStorage.setItem(STORAGE_KEY,JSON.stringify(s))}
+const st=load();if(!st){alert('Прогресс не найден — вернитесь на главную.');}
+function toBinary(s){return s.split('').map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' ')}
+function fromBinary(b){return b.split(' ').map(x=>String.fromCharCode(parseInt(x,2))).join('')}
+const bin = toBinary(`${st.parts[4].id}- ${st.parts[4].token}`);
+document.getElementById('bin').textContent = bin;
+document.getElementById('check').addEventListener('click',()=>{const val=document.getElementById('v').value.trim();if(val===`${st.parts[4].id}- ${st.parts[4].token}`){st.parts[4].found=true;save(st);document.getElementById('msg').textContent='Верно!'}else document.getElementById('msg').textContent='Неверно.'});
+document.getElementById('next').addEventListener('click',()=>{window.location.href='cipher6.html'})
+</script>
+
+
+<audio id="bgMusic" autoplay loop style="display:none">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    const music = document.getElementById('bgMusic');
+    music.volume = 0.5; 
+    
+    
+    document.body.addEventListener('click', function() {
+      music.play().catch(e => console.log('Auto-play prevented'));
+    }, { once: true });
+  });
+</script>
+
+</body>
+</html>

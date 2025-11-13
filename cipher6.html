@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Cipher 6 — HTML comment</title>
+<style>body{background:#051018;color:#dfeeff;font-family:monospace;padding:32px}button{margin-left:8px}</style></head>
+<body>
+<h2>Часть 6 — HTML-комментарий</h2>
+<p>Эта часть спрятана в HTML-комментарии страницы. Чтобы найти её, откройте исходный код страницы (View Source) и найдите метку <code>CODE6:</code>.</p>
+<div style="margin-top:12px"><input id="c" style="width:100%;padding:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:inherit" placeholder="6- ..."/></div>
+<div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end"><button id="check">Проверить</button><button id="final">Завершить</button></div>
+<div id="msg" style="margin-top:8px;color:#9fb0c8"></div>
+<!-- CODE6: placeholder -->
+<script>
+const STORAGE_KEY='cryptquest_v2_parts';function load(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))}catch(e){return null}}function save(s){localStorage.setItem(STORAGE_KEY,JSON.stringify(s))}
+const st=load();if(!st){alert('Прогресс не найден — вернитесь на главную.');}
+
+(function(){const c=document.createComment(' CODE6: '+`${st.parts[5].id}- ${st.parts[5].token}`);document.documentElement.appendChild(c);})();
+document.getElementById('check').addEventListener('click',()=>{const v=document.getElementById('c').value.trim();if(v===`${st.parts[5].id}- ${st.parts[5].token}`){st.parts[5].found=true;save(st);document.getElementById('msg').textContent='Верно!'}else document.getElementById('msg').textContent='Неверно.'});
+document.getElementById('final').addEventListener('click',()=>{window.location.href='final.html'});
+</script>
+
+
+<audio id="bgMusic" autoplay loop style="display:none">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const music = document.getElementById('bgMusic');
+    music.volume = 0.5; 
+    
+  
+    document.body.addEventListener('click', function() {
+      music.play().catch(e => console.log('Auto-play prevented'));
+    }, { once: true });
+  });
+</script>
+
+</body>
+</html>

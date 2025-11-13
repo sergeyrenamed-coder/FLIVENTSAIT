@@ -1,0 +1,48 @@
+<!doctype html>
+<style>body{background:#051018;color:#dfeeff;font-family:monospace;display:flex;flex-direction:column;align-items:center;padding:40px}img{max-width:640px;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.6)}.panel{max-width:700px;width:100%;margin-top:18px;background:rgba(255,255,255,0.02);padding:12px;border-radius:8px}</style>
+</head>
+<body>
+<h2>Разгадайте — часть 1</h2>
+<p>Код спрятан в <strong>alt</strong>-атрибуте изображения. Найдите, введите код и подтвердите.</p>
+<img id="pimg" src="https://github.com/sergeyrenamed-coder/kartinke/blob/main/sticker.webp?raw=true" alt="placeholder"/>
+<div class="panel">
+<label>Введите значение (формат: N- token)</label>
+<input id="answer" style="width:100%;padding:8px;margin-top:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:inherit" placeholder="1- a8127..." />
+<div style="display:flex;gap:8px;margin-top:8px;justify-content:flex-end">
+<button id="check">Проверить</button>
+<button id="next">Дальше</button>
+</div>
+<div id="msg" style="margin-top:8px;color:#9fb0c8"></div>
+</div>
+<script>
+const STORAGE_KEY='cryptquest_v2_parts';
+function load(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))}catch(e){return null}}
+function save(s){localStorage.setItem(STORAGE_KEY,JSON.stringify(s))}
+function init(){const st=load();if(!st){alert('Прогресс не найден — вернитесь на главную.');return}
+const p=st.parts[0];document.getElementById('pimg').alt=`${p.id}- ${p.token}`}
+init();
+document.getElementById('check').addEventListener('click',()=>{
+const val=document.getElementById('answer').value.trim();const st=load();if(!st)return;const p=st.parts[0];if(val===`${p.id}- ${p.token}`){p.found=true;save(st);document.getElementById('msg').textContent='Верно — часть засчитана.'}else{document.getElementById('msg').textContent='Неверно. Проверьте формат и регистр.'}}
+);
+document.getElementById('next').addEventListener('click',()=>{window.location.href='cipher2.html'})
+</script>
+
+<audio id="bgMusic" autoplay loop style="display:none">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    const music = document.getElementById('bgMusic');
+    music.volume = 0.5; 
+    
+    
+    document.body.addEventListener('click', function() {
+      music.play().catch(e => console.log('Auto-play prevented'));
+    }, { once: true });
+  });
+</script>
+
+</body>
+</html>
